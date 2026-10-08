@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<!-- version: v0.1 apple fractions, same-denominator addition, make-one mode, sound toggle -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="りんごを分けて、分数を目で見ながら学ぶゲーム。">
+<title>りんごのぶんすう</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#fff2d6;color:#473629;font-family:system-ui,sans-serif}main{max-width:560px;margin:auto;padding:20px 14px 40px}h1{text-align:center;color:#9c4d19;font-size:clamp(24px,6vw,32px)}.subtitle{text-align:center}.modes,.choices{display:grid;gap:8px}.modes{grid-template-columns:repeat(3,1fr)}.choices{grid-template-columns:repeat(2,1fr)}button{cursor:pointer;border:1px solid #ddd;border-radius:12px;background:white;padding:13px 6px;font-size:19px;font-weight:bold;touch-action:manipulation;min-height:48px;color:inherit}button:disabled{opacity:.5;cursor:default}button:focus-visible{outline:3px solid #237848;outline-offset:3px}button.selected{background:#ffce73;border:2px solid #b86b16}.primary{background:#f3a93c;color:#40250b;border:0;width:100%;margin-top:12px}.sound{display:block;width:100%;margin:12px 0 0;background:#fffaf0;border-color:#e0bd78;color:#6e4312}.sound[aria-pressed="true"]{background:#dff7e4;border-color:#50a56d;color:#235a34}.card{background:white;border-radius:18px;padding:18px;margin-top:18px}.status{display:flex;justify-content:space-between}.progress{height:10px;background:#e9d7b9;border-radius:10px;margin-top:14px;overflow:hidden}#bar{height:100%;background:#53a66b;width:0}.equation{text-align:center;font-size:clamp(30px,8vw,42px);font-weight:bold;margin:18px 0}.equationSmall{font-size:clamp(24px,6vw,32px);vertical-align:middle}.answerBig{display:inline-block;margin-left:6px;color:#d8211b;font-size:clamp(52px,15vw,82px);line-height:.9;text-shadow:0 4px 0 #ffd16d,0 7px 14px rgba(71,54,41,.22);animation:answerPop .42s cubic-bezier(.17,1.55,.42,1)}.reward{display:block;width:max-content;max-width:100%;margin:10px auto 0;padding:8px 14px;border-radius:999px;background:#fff0b8;color:#7b3d00;border:2px solid #f3a93c;font-size:clamp(22px,6vw,34px);font-weight:900;box-shadow:0 4px 10px rgba(71,54,41,.14);animation:rewardPop .5s cubic-bezier(.17,1.55,.42,1)}@keyframes answerPop{0%{transform:scale(.35) rotate(-8deg);opacity:.2}70%{transform:scale(1.15) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0)}}@keyframes rewardPop{0%{transform:translateY(12px) scale(.75);opacity:0}100%{transform:translateY(0) scale(1);opacity:1}}.fractionLine{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;margin:16px 0}.apple{position:relative;width:118px;height:118px;border-radius:52% 48% 50% 50%;background:#fff2dc;border:4px solid #d74735;box-shadow:inset -8px -10px 0 rgba(140,0,0,.08),0 3px 8px rgba(71,54,41,.18);overflow:visible}.appleCore{position:absolute;inset:0;border-radius:inherit;overflow:hidden}.apple::before{content:"";position:absolute;top:-17px;right:21px;width:42px;height:23px;background:#4caa52;border-radius:28px 4px 28px 4px;transform:rotate(-24deg);z-index:5;box-shadow:0 2px 3px rgba(71,54,41,.18)}.piece{position:absolute;background:repeating-linear-gradient(-45deg,#fff8ed 0 8px,#f1ddbd 8px 10px)}.piece.a{background:linear-gradient(135deg,#ff6a5f 0%,#e3261f 55%,#b91514 100%);box-shadow:inset -7px -8px 0 rgba(120,0,0,.18),inset 5px 5px 0 rgba(255,255,255,.22)}.piece.b{background:linear-gradient(135deg,#ffd47d 0%,#f3a93c 62%,#d98211 100%);box-shadow:inset -7px -8px 0 rgba(120,60,0,.16),inset 5px 5px 0 rgba(255,255,255,.24)}.piece.full{inset:0}.den2 .piece:nth-child(1){left:0;top:0;width:50%;height:100%}.den2 .piece:nth-child(2){right:0;top:0;width:50%;height:100%}.den3 .piece:nth-child(1){left:0;top:0;width:33.334%;height:100%}.den3 .piece:nth-child(2){left:33.333%;top:0;width:33.334%;height:100%}.den3 .piece:nth-child(3){right:0;top:0;width:33.334%;height:100%}.den4 .piece:nth-child(1){left:0;top:0;width:50%;height:50%}.den4 .piece:nth-child(2){right:0;top:0;width:50%;height:50%}.den4 .piece:nth-child(3){left:0;bottom:0;width:50%;height:50%}.den4 .piece:nth-child(4){right:0;bottom:0;width:50%;height:50%}.sliceLine{position:absolute;inset:0;background:linear-gradient(90deg,transparent calc(50% - 2px),#fff calc(50% - 2px),#fff calc(50% + 2px),transparent calc(50% + 2px));filter:drop-shadow(0 0 1px rgba(100,60,20,.55));z-index:3}.den3 .sliceLine{background:linear-gradient(90deg,transparent calc(33.333% - 2px),#fff calc(33.333% - 2px),#fff calc(33.333% + 2px),transparent calc(33.333% + 2px),transparent calc(66.666% - 2px),#fff calc(66.666% - 2px),#fff calc(66.666% + 2px),transparent calc(66.666% + 2px))}.den4 .sliceLine{background:linear-gradient(90deg,transparent calc(50% - 2px),#fff calc(50% - 2px),#fff calc(50% + 2px),transparent calc(50% + 2px)),linear-gradient(0deg,transparent calc(50% - 2px),#fff calc(50% - 2px),#fff calc(50% + 2px),transparent calc(50% + 2px))}.plus,.equals{font-size:34px;font-weight:900;color:#9c4d19}.fractionText{text-align:center;font-size:22px;font-weight:900;margin-top:8px}.hint{background:#f3f9ec;padding:12px;border-radius:12px}.hint p{font-size:14px}.feedback{text-align:center;padding:12px;border-radius:12px;margin-top:12px;background:#e5f6e8}.wrong{background:#fff0dd}.hidden{display:none}#result{text-align:center}small{display:block;text-align:center;margin-top:12px;font-size:13px}.choiceFraction{display:block;font-size:24px}
+#celebration{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:10}.burst{position:absolute;left:var(--x);top:var(--y)}.spark{position:absolute;width:11px;height:11px;border-radius:999px;background:var(--color);box-shadow:0 0 16px var(--color);animation:fireworkSpark .9s ease-out forwards}.spark::after{content:"";display:block;width:5px;height:18px;border-radius:999px;background:inherit;transform:translate(3px,7px)}@keyframes fireworkSpark{0%{transform:translate(-50%,-50%) scale(.2);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(.9);opacity:0}}.confetti{position:absolute;top:-30px;left:var(--x);font-size:28px;animation:confettiFall var(--duration) linear forwards}.paper{display:inline-block;transform:rotate(var(--rotate));animation:paperSpin .55s linear infinite}@keyframes confettiFall{0%{transform:translateY(-30px)}100%{transform:translateY(110vh)}}@keyframes paperSpin{to{transform:rotate(calc(var(--rotate) + 360deg))}}.cracker{position:absolute;bottom:22px;font-size:48px;animation:crackerJump 1s ease-out forwards}.cracker.left{left:16px;--flip:scaleX(1)}.cracker.right{right:16px;--flip:scaleX(-1)}@keyframes crackerJump{0%{transform:var(--flip) translateY(40px);opacity:0}25%{transform:var(--flip) translateY(0);opacity:1}100%{transform:var(--flip) translateY(10px);opacity:0}}.rocket{position:absolute;left:var(--x);bottom:-70px;font-size:54px;filter:drop-shadow(0 0 10px #ff8b1f);animation:rocketFly 1.35s cubic-bezier(.16,.84,.27,1) forwards}.rocket::after{content:"✨";position:absolute;left:12px;top:54px;font-size:28px;animation:trail .25s ease-in-out infinite alternate}.floating-star{position:absolute;left:var(--x);top:var(--y);font-size:26px;animation:starPop 1.2s ease-out forwards}@keyframes rocketFly{0%{transform:translateY(0) rotate(-12deg);opacity:0}10%{opacity:1}100%{transform:translateY(-112vh) rotate(10deg);opacity:0}}@keyframes trail{to{transform:translateY(18px) scale(1.3);opacity:.35}}@keyframes starPop{0%{transform:scale(.2) rotate(0);opacity:0}35%{opacity:1}100%{transform:translateY(-80px) scale(1.5) rotate(220deg);opacity:0}}@media (max-width:520px){.fractionLine{gap:8px}.apple{width:94px;height:94px}.plus,.equals{font-size:26px}.choices{grid-template-columns:1fr 1fr}button{font-size:17px}}@media (prefers-reduced-motion:reduce){#celebration *{animation-duration:.01ms!important}}
+</style>
+</head>
+<body><main>
+<h1>🍎 りんごの ぶんすう</h1>
+<p class="subtitle">りんごを わけて、ぶんすうで あそぼう！</p>
+<div class="modes" aria-label="むずかしさ">
+<button data-mode="look" class="selected" aria-pressed="true">みてえらぶ<small>1/2・1/3・1/4</small></button>
+<button data-mode="add" aria-pressed="false">たしざん<small>おなじ分母</small></button>
+<button data-mode="one" aria-pressed="false">1をつくる<small>ぴったり1こ</small></button>
+</div>
+<button id="soundToggle" class="sound" aria-pressed="false">🔇 サウンド オフ</button>
+<section class="card">
+<div class="status"><strong id="round"></strong><strong id="score"></strong></div>
+<div class="progress"><div id="bar"></div></div>
+<div id="game">
+<p id="prompt" class="subtitle"></p>
+<div id="equation" class="equation"></div>
+<div id="visual" class="fractionLine" aria-label="りんごの分数表示"></div>
+<div class="hint"><p id="hintText"></p></div>
+<p>こたえを えらんでね</p><div id="choices" class="choices"></div>
+<div id="feedback" class="feedback hidden" role="status" aria-live="polite"></div>
+<button id="check" class="primary">こたえあわせ ✓</button>
+<button id="next" class="primary hidden">つぎの もんだい →</button>
+</div>
+<div id="result" class="hidden">
+<h2>🎉 おしまい！</h2><h2 id="finalScore"></h2><p>さいごまで がんばったね！</p>
+<button id="restart" class="primary">もう 10もん あそぶ</button>
+</div>
+</section>
+<small>赤とオレンジのりんごを見て、分数をタッチ！</small>
+</main>
+<div id="celebration" aria-hidden="true"></div>
+<script>
+let mode='look',question=null,selected=null,selectedButtonCenter=null,round=1,score=0,solved=false;
+let soundOn=false,audioContext=null;
+const $=id=>document.getElementById(id);
+const random=n=>Math.floor(Math.random()*n);
+const colors=['#ff3b30','#ff9500','#ffcc00','#34c759','#32ade6','#5856d6','#ff2d55'];
+const label=frac=>frac.n===frac.d?'1':`${frac.n}/${frac.d}`;
+const same=(x,y)=>x.n===y.n&&x.d===y.d;
+function renderEquation(html){$('equation').innerHTML=html;}
+function rewardEquation(prefix,answer){renderEquation(`<span class="equationSmall">${prefix}</span><span class="answerBig">${answer}</span><span class="reward">せいかい！100てん</span>`);}
+function clearCelebration(){$('celebration').replaceChildren();}
+function burst(x,y,count=22){
+  const base=document.createElement('div');
+  base.className='burst';base.style.setProperty('--x',x+'%');base.style.setProperty('--y',y+'%');
+  for(let i=0;i<count;i++){
+    const spark=document.createElement('span');
+    const angle=Math.PI*2*i/count;
+    const distance=70+random(80);
+    spark.className='spark';
+    spark.style.setProperty('--dx',Math.cos(angle)*distance+'px');
+    spark.style.setProperty('--dy',Math.sin(angle)*distance+'px');
+    spark.style.setProperty('--color',colors[random(colors.length)]);
+    base.append(spark);
+  }
+  $('celebration').append(base);
+}
+function fireworks(origin){clearCelebration();const start=origin||{x:50,y:50};[0,1,2].forEach((_,i)=>setTimeout(()=>burst(Math.max(8,Math.min(92,start.x+random(17)-8)),Math.max(8,Math.min(82,start.y-10-random(22)-i*8)),24),i*150));setTimeout(clearCelebration,1400);}
+function partyCrackers(origin){
+  clearCelebration();
+  const start=origin||{x:50,y:78};
+  const pieces=['🎊','✨','⭐','💛','💚','💙','❤️'];
+  for(let i=0;i<64;i++){
+    const confetti=document.createElement('span');
+    const paper=document.createElement('span');
+    confetti.className='confetti';confetti.style.setProperty('--x',Math.max(4,Math.min(96,start.x+random(54)-27))+'%');confetti.style.setProperty('--duration',(1.1+Math.random()*1.1)+'s');confetti.style.setProperty('--rotate',random(360)+'deg');
+    confetti.style.top=Math.max(12,Math.min(88,start.y-random(16)))+'%';
+    paper.className='paper';paper.textContent=pieces[random(pieces.length)];
+    confetti.append(paper);$('celebration').append(confetti);
+  }
+  setTimeout(()=>burst(start.x,Math.max(8,start.y-18),18),120);
+  setTimeout(clearCelebration,2200);
+}
+function rocketShow(origin){
+  clearCelebration();
+  const rocket=document.createElement('div');
+  const start=origin||{x:50,y:78};
+  const x=Math.max(8,Math.min(92,start.x));
+  rocket.className='rocket';rocket.textContent='🚀';rocket.style.setProperty('--x',x+'%');rocket.style.bottom=(100-Math.max(12,Math.min(92,start.y)))+'vh';$('celebration').append(rocket);
+  for(let i=0;i<18;i++){
+    setTimeout(()=>{const star=document.createElement('span');star.className='floating-star';star.textContent=['⭐','✨','🌟'][random(3)];star.style.setProperty('--x',(x+random(24)-12)+'%');star.style.setProperty('--y',Math.max(8,start.y-random(48))+'%');$('celebration').append(star);},i*55);
+  }
+  setTimeout(()=>burst(x,Math.max(8,start.y-42),28),650);setTimeout(clearCelebration,1900);
+}
+function celebrateRandom(origin){[fireworks,partyCrackers,rocketShow][random(3)](origin);}
+function elementCenterPercent(element){
+  const rect=element.getBoundingClientRect();
+  return {x:(rect.left+rect.width/2)/window.innerWidth*100,y:(rect.top+rect.height/2)/window.innerHeight*100};
+}
+function updateSoundButton(){$('soundToggle').textContent=soundOn?'🔊 サウンド オン':'🔇 サウンド オフ';$('soundToggle').setAttribute('aria-pressed',String(soundOn));}
+function getAudioContext(){
+  const AudioContext=window.AudioContext||window.webkitAudioContext;
+  if(!AudioContext)return null;
+  if(!audioContext)audioContext=new AudioContext();
+  if(audioContext.state==='suspended')audioContext.resume();
+  return audioContext;
+}
+function playTone(frequency,start,duration,type='sine',volume=.12){
+  const context=getAudioContext();
+  if(!soundOn||!context)return;
+  const oscillator=context.createOscillator();
+  const gain=context.createGain();
+  const now=context.currentTime+start;
+  oscillator.type=type;oscillator.frequency.setValueAtTime(frequency,now);
+  gain.gain.setValueAtTime(.001,now);gain.gain.exponentialRampToValueAtTime(volume,now+.03);gain.gain.exponentialRampToValueAtTime(.001,now+duration);
+  oscillator.connect(gain);gain.connect(context.destination);oscillator.start(now);oscillator.stop(now+duration+.03);
+}
+function playCorrectSound(){playTone(880,0,.13,'sine',.13);playTone(1175,.16,.18,'sine',.14);}
+function playWrongSound(){playTone(180,0,.22,'sawtooth',.1);playTone(120,.12,.25,'sawtooth',.09);}
+function makeApple(frac,splitClass='a',caption=label(frac)){
+  const apple=document.createElement('div');
+  const core=document.createElement('div');
+  core.className='appleCore';
+  apple.className=`apple den${frac.d}`;
+  apple.setAttribute('aria-label',`${label(frac)} のりんご`);
+  for(let i=1;i<=frac.d;i++){
+    const piece=document.createElement('span');
+    piece.className='piece';
+    if(i<=frac.n)piece.classList.add(splitClass);
+    core.append(piece);
+  }
+  const lines=document.createElement('span');
+  lines.className='sliceLine';core.append(lines);
+  apple.append(core);
+  const text=document.createElement('div');
+  text.className='fractionText';text.textContent=caption;
+  const wrap=document.createElement('div');
+  wrap.append(apple,text);
+  return wrap;
+}
+function makeCombinedApple(a,b){
+  const apple=document.createElement('div');
+  const core=document.createElement('div');
+  core.className='appleCore';
+  apple.className=`apple den${a.d}`;
+  apple.setAttribute('aria-label',`${label(a)} と ${label(b)} をあわせたりんご`);
+  for(let i=1;i<=a.d;i++){
+    const piece=document.createElement('span');
+    piece.className='piece';
+    if(i<=a.n)piece.classList.add('a');
+    else if(i<=a.n+b.n)piece.classList.add('b');
+    core.append(piece);
+  }
+  const lines=document.createElement('span');
+  lines.className='sliceLine';core.append(lines);
+  apple.append(core);
+  const text=document.createElement('div');
+  text.className='fractionText';text.textContent='あわせると？';
+  const wrap=document.createElement('div');
+  wrap.append(apple,text);
+  return wrap;
+}
+function makeBuildApple(a,b,caption='あわせると？'){
+  const apple=document.createElement('div');
+  const core=document.createElement('div');
+  core.className='appleCore';
+  apple.className=`apple den${a.d}`;
+  apple.setAttribute('aria-label',`${label(a)} のあいているところに ${label(b)} を入れたりんご`);
+  for(let i=1;i<=a.d;i++){
+    const piece=document.createElement('span');
+    piece.className='piece';
+    if(i<=a.n)piece.classList.add('a');
+    else if(i<=a.n+b.n)piece.classList.add('b');
+    core.append(piece);
+  }
+  const lines=document.createElement('span');
+  lines.className='sliceLine';core.append(lines);
+  apple.append(core);
+  const text=document.createElement('div');
+  text.className='fractionText';text.textContent=caption;
+  const wrap=document.createElement('div');
+  wrap.append(apple,text);
+  return wrap;
+}
+function shuffle(list){return list.map(value=>[Math.random(),value]).sort((a,b)=>a[0]-b[0]).map(pair=>pair[1]);}
+function uniqueChoices(correct,extras){
+  const choices=[correct];
+  extras.forEach(item=>{if(choices.length<4&&!choices.some(x=>same(x,item)))choices.push(item);});
+  return shuffle(choices);
+}
+function makeQuestion(){
+  selected=null;selectedButtonCenter=null;solved=false;
+  if(mode==='look'){
+    const d=[2,3,4][random(3)];
+    const n=1+random(d);
+    const correct={n,d};
+    question={type:'look',a:correct,correct,choices:uniqueChoices(correct,[{n:1,d},{n:Math.max(1,n-1),d},{n:Math.min(d,n+1),d},{n:1,d:2},{n:2,d:3},{n:3,d:4}])};
+  }else if(mode==='add'){
+    const d=[3,4][random(2)];
+    const n1=1+random(d-1);
+    const n2=1+random(d-n1);
+    const correct={n:n1+n2,d};
+    question={type:'add',a:{n:n1,d},b:{n:n2,d},correct,choices:uniqueChoices(correct,[{n:n1,d},{n:n2,d},{n:Math.max(1,n1+n2-1),d},{n:Math.min(d,n1+n2+1),d},{n:1,d:2},{n:3,d:4}])};
+  }else{
+    const d=[2,3,4][random(3)];
+    const n=1+random(d-1);
+    const correct={n:d-n,d};
+    question={type:'one',a:{n,d},correct,choices:uniqueChoices(correct,[{n,d},{n:1,d},{n:Math.max(1,d-n-1),d},{n:Math.min(d,d-n+1),d},{n:1,d:2},{n:2,d:3}])};
+  }
+  $('feedback').classList.add('hidden');render();
+}
+function renderVisual(){
+  const visual=$('visual');
+  visual.replaceChildren();
+  if(question.type==='look'){
+    visual.append(makeApple(question.a,'a',solved?label(question.a):'？'));
+  }else if(question.type==='add'){
+    visual.append(makeBuildApple(question.a,question.b,solved?label(question.correct):'あわせると？'));
+  }else{
+    visual.append(makeApple(question.a,'a'));
+    const plus=document.createElement('span');plus.className='plus';plus.textContent='+';
+    const equals=document.createElement('span');equals.className='equals';equals.textContent='=';
+    visual.append(plus);
+    if(question.type==='add')visual.append(makeApple(question.b,'b'));
+    else visual.append(makeApple({n:0,d:question.a.d},'b'));
+    visual.append(equals,makeCombinedApple(question.a,question.type==='add'?question.b:question.correct));
+  }
+}
+function render(){
+  $('round').textContent=`もんだい ${round} / 10`;
+  $('score').textContent=`⭐ ${score} てん`;
+  $('bar').style.width=`${(round-1)*10}%`;
+  if(question.type==='look'){
+    $('prompt').textContent='色がついているところは、どの分数かな？';
+    if(solved)rewardEquation('こたえは',label(question.correct));
+    else renderEquation('？');
+    $('hintText').textContent=`りんごを ${question.a.d}こに分けたうち、色がついたところを数えよう。`;
+  }else if(question.type==='add'){
+    $('prompt').textContent='同じ大きさに分けた分数を、たしてみよう。';
+    if(solved){
+      rewardEquation(`${label(question.a)} ＋ ${label(question.b)} ＝`,label(question.correct));
+    }else{
+      renderEquation(`${label(question.a)} ＋ ${label(question.b)} ＝ ？`);
+    }
+    $('hintText').textContent='赤のりんごのあいているところに、オレンジの分を入れて考えよう。';
+  }else{
+    $('prompt').textContent='あとどれだけで、りんご1こになるかな？';
+    if(solved)rewardEquation(`${label(question.a)} ＋`,`${label(question.correct)} ＝ 1`);
+    else renderEquation(`${label(question.a)} ＋ ？ ＝ 1`);
+    $('hintText').textContent='まだ色がついていない場所を数えると、1こに近づくよ。';
+  }
+  renderVisual();
+  $('choices').replaceChildren();
+  question.choices.forEach(choice=>{
+    const button=document.createElement('button');
+    button.disabled=solved;button.classList.toggle('selected',selected&&same(selected,choice));
+    button.setAttribute('aria-pressed',String(selected&&same(selected,choice)));
+    button.innerHTML=`<span class="choiceFraction">${label(choice)}</span>`;
+    button.onclick=event=>{selected=choice;selectedButtonCenter=elementCenterPercent(event.currentTarget);$('feedback').classList.add('hidden');render();};
+    $('choices').append(button);
+  });
+  $('check').classList.toggle('hidden',solved);$('check').disabled=!selected;
+  $('next').classList.toggle('hidden',!solved);
+  $('next').textContent=round===10?'けっかを みる':'つぎの もんだい →';
+}
+$('check').onclick=()=>{
+  if(!selected||solved)return;
+  const correct=same(selected,question.correct);
+  if(correct){solved=true;score++;}
+  render();
+  $('feedback').textContent=correct?'🎉 せいかい！ よくできました！':'おしい！ 色がついたところを、もういちど見てみよう。';
+  $('feedback').classList.toggle('wrong',!correct);$('feedback').classList.remove('hidden');
+  if(correct){playCorrectSound();celebrateRandom(selectedButtonCenter);}else{playWrongSound();}
+};
+$('next').onclick=()=>{
+  if(!solved)return;
+  if(round===10){
+    $('game').classList.add('hidden');$('result').classList.remove('hidden');
+    $('bar').style.width='100%';$('finalScore').textContent=`⭐ ${score}もん できたよ！`;
+  }else{round++;makeQuestion();}
+};
+function restart(){round=1;score=0;$('game').classList.remove('hidden');$('result').classList.add('hidden');makeQuestion();}
+document.querySelectorAll('[data-mode]').forEach(button=>{
+  button.onclick=()=>{
+    mode=button.dataset.mode;
+    document.querySelectorAll('[data-mode]').forEach(x=>{x.classList.toggle('selected',x===button);x.setAttribute('aria-pressed',String(x===button));});
+    restart();
+  };
+});
+$('restart').onclick=restart;
+$('soundToggle').onclick=()=>{soundOn=!soundOn;if(soundOn)getAudioContext();updateSoundButton();};
+updateSoundButton();makeQuestion();
+</script>
+</body></html>
