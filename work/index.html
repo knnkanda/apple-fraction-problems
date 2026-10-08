@@ -270,8 +270,8 @@ $('check').onclick=()=>{
   const correct=same(selected,question.correct);
   if(correct){solved=true;score++;}
   render();
-  $('feedback').textContent=correct?'🎉 せいかい！ よくできました！':'おしい！ 色がついたところを、もういちど見てみよう。';
-  $('feedback').classList.toggle('wrong',!correct);$('feedback').classList.remove('hidden');
+  $('feedback').textContent='おしい！ 色がついたところを、もういちど見てみよう。';
+  $('feedback').classList.toggle('wrong',!correct);$('feedback').classList.toggle('hidden',correct);
   if(correct){playCorrectSound();celebrateRandom(selectedButtonCenter);}else{playWrongSound();}
 };
 $('next').onclick=()=>{
